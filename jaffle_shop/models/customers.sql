@@ -1,3 +1,10 @@
+-- add materialization config for the model to be created as a view in the DWH (happens after doing dbt run)
+{{
+  config(
+    materialized='view'
+  )
+}}
+
 with customers as (
 
     select
