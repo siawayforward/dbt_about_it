@@ -56,6 +56,16 @@ My notes for how I went from never having used dbt to setting up my first projec
   - The first time I got a fail, it was because I hadn't installed `dbt-bigquery`, fun right? :clown:
   - The second time I got a fail, the path I was running `dbt debug` from was outside the project folder. i.e. if you want to debug the set up of `jaffle_shop`, make sure you navigate into that directory :clown: :clown:
 
+### Models on models
+
+- Since the `dbt-profile` file is configured to have dbt compiler look in models folder, if we add a model, it should be in this directory (or any sub directories)
+  - You however need to add a tree for the subdirectory in the `yml` file under models, and specify materialization settings
+- In the `customers.sql` file, nothing needs to change because dbt knows where to look
+- After this, you can `dbt run` with `--full-refresh` if you get an update error
+  - to run specific models, you can use the path argument for the staging models `dbt run -s path:models/staging --full-refresh`
+  - to run specific models with just a model, you can use `dbt run --models model-name` or `dbt run -s model-name.sql`
+- `ref` function allows you to specify model to select from within a different model like we do in the `customers.sql` file
+
 #### Resources shared by dbt on starter setup files
 
 Try running the following commands:
