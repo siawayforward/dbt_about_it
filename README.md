@@ -56,12 +56,28 @@ My notes for how I went from never having used dbt to setting up my first projec
   - The first time I got a fail, it was because I hadn't installed `dbt-bigquery`, fun right? :clown:
   - The second time I got a fail, the path I was running `dbt debug` from was outside the project folder. i.e. if you want to debug the set up of `jaffle_shop`, make sure you navigate into that directory :clown: :clown:
 
+### Models on models
+
+- Since the `dbt-profile` file is configured to have dbt compiler look in models folder, if we add a model, it should be in this directory (or any sub directories)
+  - You however need to add a tree for the subdirectory in the `yml` file under models, and specify materialization settings
+- In the `customers.sql` file, nothing needs to change because dbt knows where to look
+- After this, you can `dbt run` with `--full-refresh` if you get an update error
+  - to run specific models, you can use the path argument for the staging models `dbt run -s path:models/staging --full-refresh`
+  - to run specific models with just a model, you can use `dbt run --models model-name` or `dbt run -s model-file.sql`
+- `ref` function allows you to specify model to select from within a different model like we do in the `customers.sql` file
+
+### Testing and Documentation
+
+- added a `yml` file under models directory for defining models, columns, and tests to run
+- there are four tests that come with dbt: unique, not null, accepted values, and relationships for foreign keys
+- after defining and adding these, run `dbt test` to see them run
+- you can also document the models by adding field descriptions in that same yml file
+  - you don't have to have one yml file for all tests, you can do one per package, or one per model or per subdirectory. Your choice
+  - after adding these fields, you can run `dbt docs generate` to generate documentation. On CLI, you also need to run `dbt docs serve` so that you can see it on a local server page. On dbt cloud, you'll have this after its generated
+
 #### Resources shared by dbt on starter setup files
 
 Try running the following commands:
-
-- dbt run
-- dbt test
 
 - Learn more about dbt [in the docs](https://docs.getdbt.com/docs/introduction)
 - Check out [Discourse](https://discourse.getdbt.com/) for commonly asked questions and answers

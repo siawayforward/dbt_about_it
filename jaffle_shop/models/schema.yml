@@ -1,0 +1,48 @@
+# this is because the form of yml dbt files was changed before and if they change it again 
+# they want you to be able to specify the version as needed. Kind of like python version 2 vs 3
+version: 2 
+
+models:
+  - name: customers
+    description: One record per customer
+    columns:
+      - name: customer_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: first_order_date
+        description: NULL when a customer has not yet placed an order.
+
+  - name: stg_customers
+    description: This model cleans up customer data
+    columns:
+      - name: customer_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_orders
+    description: This model cleans up order data
+    columns:
+      - name: order_id
+        description: Primary key
+        tests:
+          - unique
+          - not_null
+      - name: status
+        description: > #this is how to do multiline documentation
+          what has happened to the order most recently. We can track whether an order
+          was placed, shipped, completed, if the customer decided to return it and initiated
+          a return process and whether it has been returned with a refund.
+        tests:
+          - accepted_values:
+              values: ['placed', 'shipped', 'completed', 'return_pending', 'returned']
+      - name: customer_id
+        description: Foreign key with customers table
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers') 
+              field: customer_id
